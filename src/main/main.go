@@ -1,13 +1,12 @@
 package main
 
+// import github.com/google/gopacket || go get github.com/google/gopacket
 import (
-	"log"
-	"os"
+	"logger"
 )
 
 func init(){
-	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
-	log.SetOutput(os.Stderr)
+	logger.SetLog()
 }
 
 func main(){
