@@ -11,7 +11,7 @@ import (
 const logFile = "hsocks.log"
 const logDir = "log"
 
-func SetLog(){
+func InitLog(){
 	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)
 	setLogWriter()
 }

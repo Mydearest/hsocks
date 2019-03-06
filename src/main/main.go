@@ -6,7 +6,7 @@ import (
 )
 
 func init(){
-	logger.SetLog()
+	logger.InitLog()
 }
 
 func main(){
