@@ -3,12 +3,13 @@ package utils
 import (
 	"flag"
 	"fmt"
+	"time"
 )
 
 type CommandArgs struct {
 	Help bool
-	ProxyServer string	// http(s)
-
+	ProxyServer string	// domain <- cloudfoundry
+	ProxyTimeout int64
 }
 
 var Args *CommandArgs
@@ -20,6 +21,7 @@ func init(){
 func ParseCommand() *CommandArgs{
 	flag.StringVar(&Args.ProxyServer ,"p" ,"" ,"proxy server addr ,start with http(s)")
 	flag.BoolVar(&Args.Help ,"h" ,false ,"help info")
+	flag.Int64Var(&Args.ProxyTimeout ,"t" ,int64(time.Second*5) ,"set proxy time out -> local server put req/get res from proxy server")
 	flag.Parse()
 	flag.Usage = PrintUsage
 	return Args

@@ -2,10 +2,16 @@ package test
 
 import (
 	"data"
+	"errors"
+	"fmt"
+	"log"
 	"logger"
 	"testing"
+	"time"
+	"utils/gopool"
 )
 
+//  client start
 func TestCapturePacket(t *testing.T){
 	logger.InitLog()
 	adpter := data.NetAdapter{
@@ -14,4 +20,30 @@ func TestCapturePacket(t *testing.T){
 		Promiscuous:false,
 	}
 	adpter.CapturePacket()
+}
+
+type T int
+
+var c = 0
+
+func (T) Info() gopool.TaskInfo {
+	return gopool.TaskInfo{}
+}
+
+func (T) Run() error {
+	c++
+	time.Sleep(time.Second)
+	return errors.New(fmt.Sprintf("error %d",c))
+}
+
+func TestFixedPool(t *testing.T){
+	executor := gopool.NewFixedExecutor(1 ,8 ,time.Second*2)
+	executor.Start()
+	tt := T(10)
+	for i:=0;i<100 ;i++  {
+		if err := executor.Submit(tt);err != nil{
+			log.Println(err)
+		}
+	}
+	time.Sleep(time.Second*5)
 }

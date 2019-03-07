@@ -6,6 +6,7 @@ import (
 )
 
 // 单协程工作池
+// 无超时处理，已不再使用
 type SingleExecutor struct {
 	taskQueue chan Task
 	shutdownSign chan bool
@@ -54,7 +55,7 @@ func (ex *SingleExecutor)work(){
 		case task ,ok := <- ex.taskQueue:
 			if ok{
 				if err := task.Run();err != nil{
-					log.Println(err)
+					log.Println("running task error")
 				}
 			}
 		}

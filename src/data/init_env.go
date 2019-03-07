@@ -5,7 +5,8 @@ import (
 	"log"
 )
 
-func AllInterface() []pcap.Interface{
+
+func GetAllInterface() []pcap.Interface{
 	devices, err := pcap.FindAllDevs()
 	if err != nil{
 		log.Println(err)

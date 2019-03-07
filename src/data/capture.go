@@ -40,7 +40,13 @@ func (adapter NetAdapter)CapturePacket(){
 			if tcp.DstPort != 80 && tcp.DstPort != 443{
 				continue
 			}
-			packetHandle(packet ,tcp)
+			// 只支持ipv4
+			ipv4 ,err := ParseIpv4(packet)
+			if err != nil{
+				log.Println(err)
+				continue
+			}
+			packetHandle(packet ,tcp ,ipv4)
 		}
 	}
 }
