@@ -18,9 +18,7 @@ func InitLog(){
 
 func setLogWriter() {
 	dir := filepath.Join(utils.GetAbsPath() ,logDir)
-	if err := os.Mkdir(dir ,755);err != nil{
-		log.Println("already exists" ,err)
-	}
+	_ = os.Mkdir(dir, 755)
 	filePath := filepath.Join(dir ,logFile)
 	if f ,err := os.OpenFile(filePath ,os.O_WRONLY | os.O_CREATE | os.O_APPEND,755);err != nil{
 		log.Fatalln("init log file failed : " ,err)

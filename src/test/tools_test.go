@@ -3,7 +3,6 @@ package test
 import (
 	"log"
 	"logger"
-	"network"
 	"testing"
 	"utils"
 )
@@ -18,10 +17,21 @@ func TestLog(t *testing.T){
 }
 
 func TestPost(t *testing.T){
-	req := network.ProxyRequest{
-		Url:"http://static.shinoha.cn/upload",
-		Body:[]byte("q=123"),
+	//req := data.ProxyRequest{
+	//	Url:"http://static.shinoha.cn/upload",
+	//	Body:[]byte("q=123"),
+	//}
+	//byts ,_ := req.Post()
+	//log.Println(string(byts))
+}
+
+func TestMainn(t *testing.T){
+	args := utils.ParseCommand()
+	if args.Help{
+		utils.PrintUsage()
+		return
+	}else if args.ProxyServer == ""{
+		log.Println("no proxy server ,use -p")
+		return
 	}
-	byts ,_ := req.Post()
-	log.Println(string(byts))
 }
