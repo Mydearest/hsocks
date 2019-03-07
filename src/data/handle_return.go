@@ -20,9 +20,6 @@ type PacketReturnTask struct {
 	ok chan bool
 }
 
-func (task PacketReturnTask)Info() gopool.TaskInfo{
-	return gopool.TaskInfo{}
-}
 
 func (task PacketReturnTask) Run() error {
 	return nil

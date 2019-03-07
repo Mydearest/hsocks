@@ -8,7 +8,7 @@ type ProxyServer struct {}
 
 type PacketRequest struct {
 	Packet []byte
-	ProxyTimeout time.Duration
+	ProxyTimeout time.Duration	// 这个超时应该由proxy_server来使用，用于控制代理向被墙网站发出请求到收到回复的时间
 }
 
 type PacketResponse struct {

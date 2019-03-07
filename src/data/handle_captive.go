@@ -4,7 +4,6 @@ import (
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"log"
-	"time"
 	"utils/gopool"
 )
 
@@ -14,18 +13,13 @@ type PacketSendTask struct {
 	ipv4Layer *layers.IPv4
 }
 
-//var packetSendExecutor *gopool.SingleExecutor()
-var packetSendExecutor *gopool.FixedExecutor
+var packetSendExecutor *gopool.SingleExecutor
+//var packetSendExecutor *gopool.FixedExecutor
 
 func init(){
-	//packetSendExecutor = gopool.NewSingleExecutor()
-	packetSendExecutor = gopool.NewFixedExecutor(2 ,4 ,time.Second/2)
+	packetSendExecutor = gopool.NewSingleExecutor()
+	//packetSendExecutor = gopool.NewFixedExecutor(2 ,4 ,time.Second/2)
 	packetSendExecutor.Start()
-}
-
-
-func (task PacketSendTask)Info() gopool.TaskInfo{
-	return gopool.TaskInfo{}
 }
 
 

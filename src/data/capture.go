@@ -24,7 +24,7 @@ func (adapter NetAdapter)CapturePacket(){
 	packets := packetSource.Packets()
 	for {
 		select {
-		case packet := <-packets:
+		case packet := <- packets:
 			if packet == nil {
 				log.Println("None packet ,check interface")
 				return

@@ -9,11 +9,5 @@ type ExecutorService interface {
 
 type Task interface {
 	Run() error
-	Info() TaskInfo
-}
-
-type TaskInfo struct {
-	Desc string
-	ErrMsg string
 }
 
