@@ -21,8 +21,8 @@ func TestAllIface(t *testing.T){
 func TestCapturePacket(t *testing.T){
 	logger.InitLog()
 	adpter := data.NetAdapter{
-		DeviceName:"{\\Device\\NPF_{634C9C46-2E60-42A4-BED9-096842ADB213}",
-		//DeviceName:"\\Device\\NPF_{CF9F69E9-4D50-4102-BC01-4FFD254C89FF}",
+		//DeviceName:"{\\Device\\NPF_{634C9C46-2E60-42A4-BED9-096842ADB213}",
+		DeviceName:"\\Device\\NPF_{CF9F69E9-4D50-4102-BC01-4FFD254C89FF}",
 		SnapShotLen:1024,
 		Promiscuous:false,
 	}
@@ -50,3 +50,4 @@ func TestFixedPool(t *testing.T){
 	}
 	time.Sleep(time.Second*5)
 }
+

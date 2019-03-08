@@ -4,6 +4,7 @@ import (
 	"log"
 	"logger"
 	"testing"
+	"time"
 	"utils"
 )
 
@@ -33,5 +34,27 @@ func TestMainn(t *testing.T){
 	}else if args.ProxyServer == ""{
 		log.Println("no proxy server ,use -p")
 		return
+	}
+}
+
+func TestC(t *testing.T){
+	f := func() bool{
+		time.Sleep(time.Second*2)
+		return true
+	}
+	for i:=0 ;i<5 ;i++{
+		ch := make(chan bool)
+		go func() {
+			ch <- f()
+		}()
+		timer := time.NewTimer(time.Second)
+		//ch := make(chan bool ,1)
+		select {
+		case <- timer.C:
+			log.Println("timeout")
+		case b := <- ch:
+			log.Println(b)
+		}
+		timer.Stop()
 	}
 }

@@ -17,13 +17,8 @@ func init(){
 type PacketReturnTask struct {
 	PacketRequest call.PacketRequest
 	PacketResponse *call.PacketResponse
-	ok chan bool
 }
 
-
-func (task PacketReturnTask) Run() error {
-	return nil
-}
 
 func AsynHandle(packetReq call.PacketRequest,packetRes *call.PacketResponse){
 	task := PacketReturnTask{
@@ -33,6 +28,13 @@ func AsynHandle(packetReq call.PacketRequest,packetRes *call.PacketResponse){
 	if err := packetReturnExecutor.Submit(task);err != nil{
 		log.Println("Submit return packet task error : " ,err)
 	}
+}
+
+// ________________________________________________
+
+func (task PacketReturnTask) Run() error {
+	//responseBytes := task.PacketResponse.Packet
+	return nil
 }
 
 func RewritePacket(packet []byte) []byte{

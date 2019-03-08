@@ -1,9 +1,12 @@
 package data
 
 import (
+	"call"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"log"
+	"time"
+	"utils"
 	"utils/gopool"
 )
 
@@ -28,13 +31,17 @@ func (task PacketSendTask) Run() error {
 	ipv4 := task.ipv4Layer
 	log.Printf("src->[%s:%d] ,dst->[%s:%d]\n" ,ipv4.SrcIP ,tcp.SrcPort ,ipv4.DstIP ,tcp.DstPort)
 
-	//packetReq := call.PacketRequest{
-	//	Packet:task.packet.Data(),
-	//	ProxyTimeout:time.Duration(utils.Args.ProxyTimeout),
-	//}
-	//packetRes := &call.PacketResponse{}
-	//// 协程池处理
-	//AsynHandle(packetReq ,packetRes)
+	packetReq := call.PacketRequest{
+		Packet:task.packet.Data(),
+		ProxyTimeout:time.Duration(utils.Args.ProxyTimeout),
+	}
+	packetRes := &call.PacketResponse{}
+	if err := call.Invoke(packetReq ,packetRes);err != nil{
+		log.Printf("Invoke rpc error ,pakcet data : src->[%s:%d] ,dst->[%s:%d]\n" ,ipv4.SrcIP ,tcp.SrcPort ,ipv4.DstIP ,tcp.DstPort)
+		return err
+	}
+	// 收到返回，由协程池处理
+	AsynHandle(packetReq ,packetRes)
 	return nil
 }
 

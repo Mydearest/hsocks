@@ -1,6 +1,8 @@
 package call
 
 import (
+	"errors"
+	"fmt"
 	"time"
 )
 
@@ -12,11 +14,26 @@ type PacketRequest struct {
 }
 
 type PacketResponse struct {
-	Packet []byte
+	Packet [][]byte	// 服务端将前一次rpc到现在所收到的数据包全部返回
 }
 
 //	远端服务器被本地调用
 func (client ProxyServer)ProxyPacket(req PacketRequest ,res *PacketResponse) error{
+	finishCh := make(chan error)
+	go func() {
+		finishCh <- handleRpc(req ,res)
+	}()
+	timer := time.NewTimer(req.ProxyTimeout)
+	defer timer.Stop()
+	select {
+	case <- timer.C:
+		return errors.New(fmt.Sprintf("Rpc time out after %d ms" ,req.ProxyTimeout/time.Millisecond))
+	case <- finishCh:
+		return nil
+	}
+}
+
+func handleRpc(req PacketRequest ,res *PacketResponse) error{
 
 	return nil
 }
