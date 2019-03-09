@@ -8,12 +8,10 @@ import (
 	"utils"
 )
 
-func init(){
-	logger.InitLog()
-}
-
 func main(){
+	//cli.StartSsl()
 	args := utils.ParseCommand()
+	logger.InitLog()
 	if args.Help{
 		utils.PrintUsage()
 		return
@@ -27,8 +25,8 @@ func main(){
 		fmt.Println("no proxy server value ,usr -p or -h set proxy server addr")
 		return
 	}else if args.ClientMode != ""{
-		cli.StartClient()
+		cli.StartProxyClient()
 	}else if args.ServerMode != "" || (args.ServerMode == "" && args.CloudFoundry == true){
-		ser.StartServer()
+		ser.StartProxyServer()
 	}
 }

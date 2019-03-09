@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"net/rpc"
-	"network"
 	"utils"
 )
 
@@ -17,47 +16,59 @@ type ProxyRequest struct {
 	Url string
 	Host string
 	Method string
-	Protocal string
+	Protocol string
 	Headers map[string][]string
 	Body []byte
 }
 
 type ProxyResponse struct {
-	Protocal string
+	Protocol string
 	StatusCode int
 	Headers map[string][]string
 	Body []byte
 }
 
-var DefaultProxy *Proxy
 
-func init(){
+type RpcMethod string
+
+const M_ProxyHttp RpcMethod = "ProxyRpc.ProxyHttp"
+const M_ProxySsl RpcMethod = "ProxyRpc.ProxySsl"
+
+var DefaultClientProxy *Proxy
+
+//var DefaultServerProxy *Proxy
+//
+//func InitServerProxy(){
+//	DefaultServerProxy = &Proxy{}
+//}
+
+func InitClientProxy(){
 	if conn, err := rpc.DialHTTP("tcp", utils.Args.ProxyServer);err != nil{
 		log.Fatalln("init rpc client error : " ,err)
 	}else{
-		DefaultProxy = &Proxy{
+		DefaultClientProxy = &Proxy{
 			RpcClient:conn,
 		}
 	}
 }
 
-func (p *Proxy)BuildProxyRequest(req http.Request) ProxyRequest{
-	proxyRequst := ProxyRequest{}
+func (*Proxy)BuildProxyRequest(req http.Request) ProxyRequest{
+	proxyRequest := ProxyRequest{}
 	data ,err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
 	if err != nil{
 		log.Println(err)
-		return proxyRequst
+		return proxyRequest
 	}else {
-		proxyRequst = ProxyRequest{
+		proxyRequest = ProxyRequest{
 			Method:req.Method,
 			Url:req.URL.Path,
 			Host:req.Host,
-			Protocal:req.Proto,
+			Protocol:req.Proto,
 			Headers:req.Header,
 			Body:data,
 		}
-		return proxyRequst
+		return proxyRequest
 	}
 }
 
@@ -65,19 +76,27 @@ func (p *Proxy)Invoke(method RpcMethod ,req ProxyRequest ,res *ProxyResponse) er
 	return p.RpcClient.Call(string(method) ,req ,res)
 }
 
-type RpcMethod string
 
-const ProxyHttp RpcMethod = "Proxy.ProxyHttp"
+//___________________________________RPC method___________________________________
 
-func (p *Proxy)ProxyHttp(req ProxyRequest ,res *ProxyResponse) error{
-	httpClient := &network.HttpClient{
+type ProxyRpc struct {
+
+}
+
+func (p *ProxyRpc)ProxySsl(){
+
+}
+
+func (p *ProxyRpc)ProxyHttp(req ProxyRequest ,res *ProxyResponse) error{
+	httpClient := &HttpClient{
 		Url:req.Url,
 		Method:req.Method,
 		Body:req.Body,
-		Protocal:req.Protocal,
+		Protocol:req.Protocol,
 		Host:req.Host,
 		Headers:req.Headers,
 	}
+
 	if httpRes ,err := httpClient.DoRequest();err != nil{
 		return err
 	}else{
@@ -88,7 +107,7 @@ func (p *Proxy)ProxyHttp(req ProxyRequest ,res *ProxyResponse) error{
 		}
 		res.Body = data
 		res.Headers = httpRes.Header
-		res.Protocal = httpRes.Proto
+		res.Protocol = httpRes.Proto
 		res.StatusCode = httpRes.StatusCode
 		return nil
 	}

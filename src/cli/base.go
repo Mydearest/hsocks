@@ -1,27 +1,35 @@
 package cli
 
 import (
+	"call"
 	"log"
+	"logger"
 	"net/http"
 	"utils"
 )
 
-var Mur *http.ServeMux
 
 func init(){
-	Mur = http.NewServeMux()
+
 }
 
-func StartClient(){
+func StartProxyClient(){
+	call.InitClientProxy()
 	StartHttpServer()
 }
 
 func StartHttpServer(){
 	var server = http.Server{
-		Handler:Mur,
-		Addr:utils.Args.ClientMode,
+		Handler:http.HandlerFunc(func (writer http.ResponseWriter, req *http.Request){
+			logger.Debug.Println(req.Method ,req.Host)
+			if req.Method == http.MethodConnect{
+				proxySsl(writer ,req)
+			}else{
+				proxyHttp(writer ,req)
+			}
+		}),
+		Addr:":"+utils.Args.ClientMode,
 	}
-	dispatcher(Mur)
 	if err := server.ListenAndServe();err != nil{
 		log.Println(err.Error())
 	}

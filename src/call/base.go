@@ -7,13 +7,9 @@ import (
 	"net/rpc"
 )
 
-func RegisterRpc(a interface{}) error{
-	return rpc.Register(a)
-}
-
-func StartRpc(addr string){
+func StartRpc(port string){
 	rpc.HandleHTTP()
-	if listener ,err := net.Listen("tcp" ,":"+addr);err != nil{
+	if listener ,err := net.Listen("tcp" ,":"+port);err != nil{
 		log.Println("Start rpc server error : " ,err)
 	}else {
 		if err := http.Serve(listener ,nil);err != nil{
